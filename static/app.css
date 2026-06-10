@@ -1,0 +1,4 @@
+.flash { padding:1rem; border-radius:4px; margin-bottom:1rem; cursor:pointer; color:white; }
+.flash-success { background:#2d9948; }
+.flash-error   { background:#c0392b; }
+.flash-warning { background:#d68910; }

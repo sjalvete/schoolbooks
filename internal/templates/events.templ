@@ -1,0 +1,284 @@
+package templates
+
+import (
+    "fmt"
+    "time"
+    "schoolbooks/internal/model"
+    "schoolbooks/internal/page"
+)
+
+templ UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.Weekday, daysInMonth int, events map[int][]model.Event, eventList []model.Event, title string) {
+    @Layout(pd) {
+        <section>
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem">
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", prevYear(year, month), prevMonth(month), view)) }
+                    role="button" class="outline" style="width:2.5rem; padding:0.4rem; text-align:center">‹</a>
+                <h2 style="margin:0; flex:1; text-align:center">{ title }</h2>
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", nextYear(year, month), nextMonth(month), view)) }
+                    role="button" class="outline" style="width:2.5rem; padding:0.4rem; text-align:center">›</a>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem">
+                <a href={ templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=calendar", year, month)) }
+                    role="button"
+                    if view == "calendar" {
+                        class=""
+                    } else {
+                        class="outline"
+                    }>
+                    Calendar
+                </a>
+                <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
+                    role="button"
+                    if view == "agenda" {
+                        class=""
+                    } else {
+                        class="outline"
+                    }>
+                    Agenda
+                </a>
+            </div>
+
+            if view == "agenda" {
+                @agendaView(eventList)
+            } else {
+                @calendarView(year, month, firstWeekday, daysInMonth, events)
+            }
+        </section>
+
+        <dialog id="modal">
+            <div id="modal-content"></div>
+        </dialog>
+    }
+}
+
+templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.Weekday, daysInMonth int, events map[int][]model.Event, eventList []model.Event, title string) {
+    @Layout(pd) {
+        <section>
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem">
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", prevYear(year, month), prevMonth(month), view)) }
+                    role="button" class="outline" style="width:2.5rem; padding:0.4rem; text-align:center">‹</a>
+                <h2 style="margin:0; flex:1; text-align:center">{ title }</h2>
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", nextYear(year, month), nextMonth(month), view)) }
+                    role="button" class="outline" style="width:2.5rem; padding:0.4rem; text-align:center">›</a>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem">
+                <a href={ templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=calendar", year, month)) }
+                    role="button"
+                    if view == "calendar" {
+                        class=""
+                    } else {
+                        class="outline"
+                    }>
+                    Calendar
+                </a>
+                <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
+                    role="button"
+                    if view == "agenda" {
+                        class=""
+                    } else {
+                        class="outline"
+                    }>
+                    Agenda
+                </a>
+            </div>
+
+            if view == "agenda" {
+                @agendaView(eventList)
+            } else {
+                @calendarView(year, month, firstWeekday, daysInMonth, events)
+            }
+        </section>
+
+        <dialog id="modal">
+            <div id="modal-content"></div>
+        </dialog>
+    }
+}
+
+templ NewEventForm(date string) {
+    <form hx-post="/events" hx-swap="none">
+        <label>
+            Title
+            <input type="text" name="title" required/>
+        </label>
+
+        <label>
+            Date
+            <input type="date" name="date" value={ date } required/>
+        </label>
+
+        <label>
+            Price
+            <input type="int" name="price" required/>
+        </label>
+
+        <label>
+            Description
+            <textarea name="description" rows="3"></textarea>
+        </label>
+
+        <footer class="grid">
+            <button
+                type="button"
+                onclick="document.getElementById('modal').close()"
+                class="secondary"
+            >
+                Close
+            </button>
+
+            <button type="submit">
+                Save
+            </button>
+
+        </footer>
+    </form>
+}
+
+templ EditEventForm(e model.Event) {
+    <form hx-put={ fmt.Sprintf("/events/%d", e.ID) } hx-swap="none">
+        <label>
+            Title
+            <input type="text" name="title" value={ e.Title } required/>
+        </label>
+
+        <label>
+            Date
+            <input type="date" name="date" value={ e.Date[:10] } required/>
+        </label>
+
+        <label>
+            Price
+            <input type="int" name="price" value={ e.Price } required/>
+        </label>
+
+        <label>
+            Description
+            <textarea name="description" rows="3">{ e.Description }</textarea>
+        </label>
+
+        <footer class="grid">
+            <button
+                type="button"
+                onclick="document.getElementById('modal').close()"
+                class="secondary"
+            >
+                Cancel
+            </button>
+
+            <button type="submit">Save</button>
+
+            <button style="background:red; border-color:red"
+                type="button"
+                hx-delete={ fmt.Sprintf("/events/%d", e.ID) }
+                hx-confirm="Delete this event?"
+            >
+                <i data-lucide="trash-2"></i>
+            </button>
+
+        </footer>
+    </form>
+}
+
+
+templ agendaView(events []model.Event) {
+    if len(events) == 0 {
+        <p>No events this month.</p>
+    } else {
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                for _, e := range events {
+                    <tr>
+                        <td style="white-space:nowrap">{ e.Date[:10] }</td>
+                        <td>{ e.Title }</td>
+                        <td style="color:var(--pico-muted-color)">{ e.Description }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+templ calendarView(year, month int, firstWeekday time.Weekday, daysInMonth int, events map[int][]model.Event) {
+    <table style="table-layout:fixed; width:100%">
+        <thead>
+            <tr>
+                <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
+                <th style="color:var(--pico-muted-color)">Sat</th>
+                <th style="color:var(--pico-muted-color)">Sun</th>
+            </tr>
+        </thead>
+        <tbody>
+            @calendarRows(year, month, firstWeekday, daysInMonth, events)
+        </tbody>
+    </table>
+}
+
+templ calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, events map[int][]model.Event) {
+    {{
+        offset := int(firstWeekday) - 1
+        if offset < 0 { offset = 6 }
+        day := 1
+        cell := 0
+    }}
+    for day <= daysInMonth {
+        <tr>
+            for col := 0; col < 7; col++ {
+                if (cell < offset && day == 1) || day > daysInMonth {
+                    <td></td>
+                } else {
+                    <td
+                        style="vertical-align:top; padding:0.4rem; cursor:pointer; border-radius:4px"
+                        hx-get={ fmt.Sprintf("/events/new?date=%04d-%02d-%02d", year, month, day) }
+                        hx-target="#modal-content"
+                        hx-swap="innerHTML"
+                        hx-on::after-request="document.getElementById('modal').showModal()"
+                    >
+                        <small><strong>{ fmt.Sprintf("%d", day) }</strong></small>
+                        for _, e := range events[day] {
+                            <div style="font-size:0.7rem; background:var(--pico-primary); color:white; border-radius:3px; padding:1px 4px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis"
+                                hx-get={ fmt.Sprintf("/events/edit/%d", e.ID) }
+                                hx-target="#modal-content"
+                                hx-swap="innerHTML"
+                                hx-on:click="event.stopPropagation()"
+                                hx-on::after-request="document.getElementById('modal').showModal()"
+                            >
+                                { e.Title }
+                            </div>
+                        }
+                    </td>
+                    {{ day++ }}
+                }
+                {{ cell++ }}
+            }
+        </tr>
+    }
+}
+
+func prevMonth(month int) int {
+    if month == 1 { return 12 }
+    return month - 1
+}
+
+func prevYear(year, month int) int {
+    if month == 1 { return year - 1 }
+    return year
+}
+
+func nextMonth(month int) int {
+    if month == 12 { return 1 }
+    return month + 1
+}
+
+func nextYear(year, month int) int {
+    if month == 12 { return year + 1 }
+    return year
+}

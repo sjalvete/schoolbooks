@@ -1,0 +1,4 @@
+[build]
+  cmd = "~/go/bin/templ generate && go build -o ./tmp/main ./cmd/server"
+  bin = "./tmp/main"
+  include_ext = ["go", "templ"]

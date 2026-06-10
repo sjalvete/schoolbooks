@@ -1,0 +1,57 @@
+package templates
+
+import "schoolbooks/internal/model"
+import "schoolbooks/internal/page"
+
+templ Users(pd *page.Data, users []model.User) {
+    @Layout(pd) {
+        <div class="grid">
+            <section>
+                <h2>Users</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        for _, u := range users {
+                            <tr>
+                                <td>{ u.Name }</td>
+                                <td>{ u.Email }</td>
+                                <td>{ u.Role }</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+            /*<section>
+                <h2>Add user</h2>
+                <form method="POST" action="/admin/users">
+                    <label>
+                        Name
+                        <input type="text" name="name" required/>
+                    </label>
+                    <label>
+                        Email
+                        <input type="email" name="email" required/>
+                    </label>
+                    <label>
+                        Password
+                        <input type="password" name="password" required/>
+                    </label>
+                    <label>
+                        Role
+                        <select name="role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </label>
+                    <button type="submit">Create</button>
+                </form>
+            </section>*/
+        </div>
+    }
+}
