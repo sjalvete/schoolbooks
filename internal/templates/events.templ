@@ -26,7 +26,7 @@ templ UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.
                     } else {
                         class="outline"
                     }>
-                    Calendar
+                    Kalendarz
                 </a>
                 <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
                     role="button"
@@ -35,7 +35,7 @@ templ UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.
                     } else {
                         class="outline"
                     }>
-                    Agenda
+                    Nadchodzące wydarzenia
                 </a>
             </div>
 
@@ -47,6 +47,7 @@ templ UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.
         </section>
 
         <dialog id="modal">
+            <span class="noautofocus" tabindex="-1" style="position:absolute; opacity:0"></span>
             <div id="modal-content"></div>
         </dialog>
     }
@@ -71,7 +72,7 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
                     } else {
                         class="outline"
                     }>
-                    Calendar
+                    Kalendarz
                 </a>
                 <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
                     role="button"
@@ -80,7 +81,7 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
                     } else {
                         class="outline"
                     }>
-                    Agenda
+                    Nadchodzące wydarzenia
                 </a>
             </div>
 
@@ -92,6 +93,7 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
         </section>
 
         <dialog id="modal">
+            <span class="noautofocus" tabindex="-1" style="position:absolute; opacity:0"></span>
             <div id="modal-content"></div>
         </dialog>
     }
@@ -100,22 +102,22 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
 templ NewEventForm(date string) {
     <form hx-post="/events" hx-swap="none">
         <label>
-            Title
+            Tytuł
             <input type="text" name="title" required/>
         </label>
 
         <label>
-            Date
+            Data
             <input type="date" name="date" value={ date } required/>
         </label>
 
         <label>
-            Price
+            Cena
             <input type="int" name="price" required/>
         </label>
 
         <label>
-            Description
+            Opis
             <textarea name="description" rows="3"></textarea>
         </label>
 
@@ -125,11 +127,11 @@ templ NewEventForm(date string) {
                 onclick="document.getElementById('modal').close()"
                 class="secondary"
             >
-                Close
+                Zamknij
             </button>
 
             <button type="submit">
-                Save
+                Zapisz
             </button>
 
         </footer>
@@ -139,22 +141,22 @@ templ NewEventForm(date string) {
 templ EditEventForm(e model.Event) {
     <form hx-put={ fmt.Sprintf("/events/%d", e.ID) } hx-swap="none">
         <label>
-            Title
+            Tytuł
             <input type="text" name="title" value={ e.Title } required/>
         </label>
 
         <label>
-            Date
+            Data
             <input type="date" name="date" value={ e.Date[:10] } required/>
         </label>
 
         <label>
-            Price
+            Cena
             <input type="int" name="price" value={ e.Price } required/>
         </label>
 
         <label>
-            Description
+            Opis
             <textarea name="description" rows="3">{ e.Description }</textarea>
         </label>
 
@@ -164,15 +166,15 @@ templ EditEventForm(e model.Event) {
                 onclick="document.getElementById('modal').close()"
                 class="secondary"
             >
-                Cancel
+                Anuluj
             </button>
 
-            <button type="submit">Save</button>
+            <button type="submit">Zapisz</button>
 
             <button style="background:red; border-color:red"
                 type="button"
                 hx-delete={ fmt.Sprintf("/events/%d", e.ID) }
-                hx-confirm="Delete this event?"
+                hx-confirm="Usunąć to wydarzenie?"
             >
                 <i data-lucide="trash-2"></i>
             </button>
@@ -184,14 +186,14 @@ templ EditEventForm(e model.Event) {
 
 templ agendaView(events []model.Event) {
     if len(events) == 0 {
-        <p>No events this month.</p>
+        <p>Brak wydarzeń w tym miesiącu.</p>
     } else {
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Description</th>
+                    <th>Data</th>
+                    <th>Tytuł</th>
+                    <th>Opis</th>
                 </tr>
             </thead>
             <tbody>
@@ -211,9 +213,9 @@ templ calendarView(year, month int, firstWeekday time.Weekday, daysInMonth int, 
     <table style="table-layout:fixed; width:100%">
         <thead>
             <tr>
-                <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
-                <th style="color:var(--pico-muted-color)">Sat</th>
-                <th style="color:var(--pico-muted-color)">Sun</th>
+                <th>Pn</th><th>Wt</th><th>Śr</th><th>Cz</th><th>Pt</th>
+                <th style="color:var(--pico-muted-color)">Sb</th>
+                <th style="color:var(--pico-muted-color)">Nd</th>
             </tr>
         </thead>
         <tbody>

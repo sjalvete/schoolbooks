@@ -1,0 +1,135 @@
+package templates
+
+import (
+    "fmt"
+    "schoolbooks/internal/model"
+    "schoolbooks/internal/page"
+)
+
+templ Recipients(pd *page.Data, recipients []model.Recipient) {
+    @Layout(pd) {
+        <section>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem">
+                <h2 style="margin:0">Odbiorcy</h2>
+                <button
+                    hx-get="/recipients/new"
+                    hx-target="#modal-content"
+                    hx-swap="innerHTML"
+                    hx-on::after-request="document.getElementById('modal').showModal()"
+                >
+                    Dodaj odbiorcę
+                </button>
+            </div>
+
+            if len(recipients) == 0 {
+                <p>Brak odbiorców.</p>
+            } else {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tytuł</th>
+                            <th>Konto</th>
+                            <th>Opis</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        for _, rcp := range recipients {
+                            <tr
+                                style="cursor:pointer"
+                                hx-get={ fmt.Sprintf("/recipients/edit/%d", rcp.ID) }
+                                hx-target="#modal-content"
+                                hx-swap="innerHTML"
+                                hx-on::after-request="document.getElementById('modal').showModal()"
+                            >
+                                <td>{ rcp.Title }</td>
+                                <td>{ rcp.Account }</td>
+                                <td class="recipient-details">{ rcp.Description }</td>
+                                <td style="text-align:right">
+                                    <i data-lucide="pencil"></i>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <dialog id="modal">
+            <span class="noautofocus" tabindex="-1" style="position:absolute; opacity:0"></span>
+            <div id="modal-content"></div>
+        </dialog>
+    }
+}
+
+templ NewRecipientForm() {
+    <form hx-post="/recipients" hx-swap="none">
+        <label>
+            Tytuł
+            <input type="text" name="title" required/>
+        </label>
+
+        <label>
+            Konto
+            <input type="text" name="account"/>
+        </label>
+
+        <label>
+            Opis
+            <textarea name="description" rows="3"></textarea>
+        </label>
+
+        <footer class="grid">
+            <button
+                type="button"
+                onclick="document.getElementById('modal').close()"
+                class="secondary"
+            >
+                Zamknij
+            </button>
+
+            <button type="submit">
+                Zapisz
+            </button>
+        </footer>
+    </form>
+}
+
+templ EditRecipientForm(rcp model.Recipient) {
+    <form hx-put={ fmt.Sprintf("/recipients/%d", rcp.ID) } hx-swap="none">
+        <label>
+            Tytuł
+            <input type="text" name="title" value={ rcp.Title } required/>
+        </label>
+
+        <label>
+            Konto
+            <input type="text" name="account" value={ rcp.Account }/>
+        </label>
+
+        <label>
+            Opis
+            <textarea name="description" rows="3">{ rcp.Description }</textarea>
+        </label>
+
+        <footer class="grid">
+            <button
+                type="button"
+                onclick="document.getElementById('modal').close()"
+                class="secondary"
+            >
+                Anuluj
+            </button>
+
+            <button type="submit">Zapisz</button>
+
+            <button style="background:red; border-color:red"
+                type="button"
+                hx-delete={ fmt.Sprintf("/recipients/%d", rcp.ID) }
+                hx-confirm="Usunąć tego odbiorcę?"
+            >
+                <i data-lucide="trash-2"></i>
+            </button>
+        </footer>
+    </form>
+}

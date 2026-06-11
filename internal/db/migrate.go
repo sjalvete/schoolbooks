@@ -63,6 +63,14 @@ func migrate(db *sql.DB) error {
             read        INTEGER NOT NULL DEFAULT 0,
             created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
         );
+
+        CREATE TABLE IF NOT EXISTS recipients (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            title       TEXT NOT NULL,
+            account     TEXT,
+            description TEXT,
+            created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
     `)
     return err
 }

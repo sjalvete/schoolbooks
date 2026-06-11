@@ -86,22 +86,22 @@ func Layout(pd *page.Data) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><header class=\"container\"><nav><ul><li><strong>Schoolbooks</strong></li></ul><ul>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><header class=\"container\"><nav><ul><li><strong>Schoolbooks</strong></li></ul><ul id=\"nav-links\" class=\"nav-links\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if pd.User != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<li><a href=\"/\">Home</a></li><li><a href=\"/events\">Events</a></li><li><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button class=\"outline contrast\" type=\"submit\">Logout</button></form></li>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<li><a href=\"/\">Strona główna</a></li><li><a href=\"/events\">Wydarzenia</a></li><li><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button class=\"outline contrast\" type=\"submit\">Wyloguj</button></form></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</ul></nav>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</ul><button class=\"hamburger outline\" onclick=\"document.getElementById('nav-links').classList.toggle('open')\" aria-label=\"Menu\"><i data-lucide=\"menu\"></i></button></nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if pd.User != nil && pd.IsAdmin {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<nav class=\"admin\"><div></div><ul><li><a href=\"/events/manage\">Manage Events</a></li></ul></nav>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<nav class=\"admin\"><div></div><ul><li><a href=\"/events/manage\">Zarządzaj wydarzeniami</a></li><li><a href=\"/recipients\">Odbiorcy</a></li></ul></nav>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -118,7 +118,7 @@ func Layout(pd *page.Data) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if pd != nil {
+		if pd.User != nil && pd != nil && pd.Config != nil && pd.Config.Debug {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<pre style=\"font-size:0.7rem; background:#f4f4f4; padding:1rem; overflow:auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

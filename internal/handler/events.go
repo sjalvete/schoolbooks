@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"schoolbooks/internal/config"
+	"schoolbooks/internal/locale"
 	"schoolbooks/internal/model"
 	"schoolbooks/internal/page"
 	"schoolbooks/internal/templates"
@@ -14,11 +16,12 @@ import (
 )
 
 type EventHandler struct {
-	DB *sql.DB
+	DB     *sql.DB
+	Config *config.Config
 }
 
 func (h *EventHandler) List(w http.ResponseWriter, r *http.Request) {
-	pd := page.New("Events", r, w)
+	pd := page.New("Wydarzenia", r, w, h.Config)
 	now := time.Now()
 	year, _ := strconv.Atoi(r.URL.Query().Get("year"))
 	month, _ := strconv.Atoi(r.URL.Query().Get("month"))
@@ -44,7 +47,7 @@ func (h *EventHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, "could not load events", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się załadować wydarzeń", http.StatusInternalServerError)
 		return
 	}
 
@@ -64,12 +67,12 @@ func (h *EventHandler) List(w http.ResponseWriter, r *http.Request) {
 		daysInMonth,
 		eventMap,
 		events,
-		fmt.Sprintf("%s %d", time.Month(month).String(), year),
+		fmt.Sprintf("%s %d", locale.PolishMonth(time.Month(month)), year),
 	).Render(r.Context(), w)
 }
 
 func (h *EventHandler) AdminList(w http.ResponseWriter, r *http.Request) {
-	pd := page.New("Events", r, w)
+	pd := page.New("Wydarzenia", r, w, h.Config)
 	now := time.Now()
 	year, _ := strconv.Atoi(r.URL.Query().Get("year"))
 	month, _ := strconv.Atoi(r.URL.Query().Get("month"))
@@ -95,7 +98,7 @@ func (h *EventHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, "could not load events", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się załadować wydarzeń", http.StatusInternalServerError)
 		return
 	}
 
@@ -115,7 +118,7 @@ func (h *EventHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 		daysInMonth,
 		eventMap,
 		events,
-		fmt.Sprintf("%s %d", time.Month(month).String(), year),
+		fmt.Sprintf("%s %d", locale.PolishMonth(time.Month(month)), year),
 	).Render(r.Context(), w)
 }
 
@@ -130,7 +133,7 @@ func (h *EventHandler) EditEventForm(w http.ResponseWriter, r *http.Request) {
 	e, err := model.GetEventByID(h.DB, id)
 
 	if err != nil {
-		http.Error(w, "could not load event", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się załadować wydarzenia", http.StatusInternalServerError)
 		return
 	}
 
@@ -144,7 +147,7 @@ func (h *EventHandler) Create(w http.ResponseWriter, r *http.Request) {
 	price := r.FormValue("price")
 
 	if err := model.CreateEvent(h.DB, title, description, price, date); err != nil {
-		http.Error(w, "could not create event", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się utworzyć wydarzenia", http.StatusInternalServerError)
 		return
 	}
 
@@ -160,7 +163,7 @@ func (h *EventHandler) Update(w http.ResponseWriter, r *http.Request) {
 	price := r.FormValue("price")
 
 	if err := model.UpdateEvent(h.DB, id, title, description, price, date); err != nil {
-		http.Error(w, "could not update event", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się zaktualizować wydarzenia", http.StatusInternalServerError)
 		return
 	}
 
@@ -172,7 +175,7 @@ func (h *EventHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if err := model.DeleteEvent(h.DB, id); err != nil {
-		http.Error(w, "could not delete event", http.StatusInternalServerError)
+		http.Error(w, "Nie udało się usunąć wydarzenia", http.StatusInternalServerError)
 		return
 	}
 

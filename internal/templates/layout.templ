@@ -31,23 +31,31 @@ templ Layout(pd *page.Data) {
                 <ul>
                     <li><strong>Schoolbooks</strong></li>
                 </ul>
-                <ul>
+                <ul id="nav-links" class="nav-links">
                     if pd.User != nil {
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/events">Events</a></li>
+                        <li><a href="/">Strona główna</a></li>
+                        <li><a href="/events">Wydarzenia</a></li>
                         <li>
                             <form method="POST" action="/logout" style="margin:0">
-                                <button class="outline contrast" type="submit">Logout</button>
+                                <button class="outline contrast" type="submit">Wyloguj</button>
                             </form>
                         </li>
                     }
                 </ul>
+                <button
+                    class="hamburger outline"
+                    onclick="document.getElementById('nav-links').classList.toggle('open')"
+                    aria-label="Menu"
+                >
+                    <i data-lucide="menu"></i>
+                </button>
             </nav>
             if pd.User != nil && pd.IsAdmin {
                 <nav class="admin">
                     <div></div>
                     <ul>
-                        <li><a href="/events/manage">Manage Events</a></li>
+                        <li><a href="/events/manage">Zarządzaj wydarzeniami</a></li>
+                        <li><a href="/recipients">Odbiorcy</a></li>
                     </ul>
                 </nav>
             }
@@ -58,7 +66,7 @@ templ Layout(pd *page.Data) {
         <footer class="container">
             <small>Schoolbooks © 2026</small>
         </footer>
-        if pd != nil {
+        if pd.User != nil && pd != nil && pd.Config != nil && pd.Config.Debug {
             <pre style="font-size:0.7rem; background:#f4f4f4; padding:1rem; overflow:auto">
                 {{
                     b, _ := json.MarshalIndent(pd, "", "  ")

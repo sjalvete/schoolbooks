@@ -43,7 +43,7 @@ func Login(pd *page.Data) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article style=\"max-width: 400px; margin: 4rem auto\"><h2>Sign in</h2><form method=\"POST\" action=\"/login\"><label>Email <input type=\"email\" name=\"email\" required autofocus></label> <label>Password <input type=\"password\" name=\"password\" required></label> <button type=\"submit\">Sign in</button></form></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article style=\"max-width: 400px; margin: 4rem auto\"><h2>Zaloguj się</h2><form method=\"POST\" action=\"/login\"><label>Email <input type=\"email\" name=\"email\" required autofocus></label> <label>Hasło <input type=\"password\" name=\"password\" required></label> <button type=\"submit\">Zaloguj się</button></form></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -44,7 +44,7 @@ func Users(pd *page.Data, users []model.User) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid\"><section><h2>Users</h2><table><thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid\"><section><h2>Użytkownicy</h2><table><thead><tr><th>Imię i nazwisko</th><th>Email</th><th>Rola</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

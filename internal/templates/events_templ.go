@@ -115,7 +115,7 @@ func UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.W
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, ">Calendar</a> <a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, ">Kalendarz</a> <a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -143,7 +143,7 @@ func UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.W
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, ">Agenda</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, ">Nadchodzące wydarzenia</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -158,7 +158,7 @@ func UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.W
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</section><dialog id=\"modal\"><div id=\"modal-content\"></div></dialog>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</section><dialog id=\"modal\"><span class=\"noautofocus\" tabindex=\"-1\" style=\"position:absolute; opacity:0\"></span><div id=\"modal-content\"></div></dialog>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -212,7 +212,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 			var templ_7745c5c3_Var10 templ.SafeURL
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", prevYear(year, month), prevMonth(month), view)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 59, Col: 142}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 60, Col: 142}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -225,7 +225,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 61, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 62, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -238,7 +238,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 			var templ_7745c5c3_Var12 templ.SafeURL
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=%s", nextYear(year, month), nextMonth(month), view)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 62, Col: 142}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 63, Col: 142}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -251,7 +251,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 			var templ_7745c5c3_Var13 templ.SafeURL
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=calendar", year, month)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 67, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 68, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -272,14 +272,14 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, ">Calendar</a> <a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, ">Kalendarz</a> <a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 templ.SafeURL
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/events?&view=agenda")))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 76, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 77, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -300,7 +300,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, ">Agenda</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, ">Nadchodzące wydarzenia</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -315,7 +315,7 @@ func AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time.
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</section><dialog id=\"modal\"><div id=\"modal-content\"></div></dialog>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</section><dialog id=\"modal\"><span class=\"noautofocus\" tabindex=\"-1\" style=\"position:absolute; opacity:0\"></span><div id=\"modal-content\"></div></dialog>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -350,20 +350,20 @@ func NewEventForm(date string) templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<form hx-post=\"/events\" hx-swap=\"none\"><label>Title <input type=\"text\" name=\"title\" required></label> <label>Date <input type=\"date\" name=\"date\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<form hx-post=\"/events\" hx-swap=\"none\"><label>Tytuł <input type=\"text\" name=\"title\" required></label> <label>Data <input type=\"date\" name=\"date\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(date)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 109, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 111, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" required></label> <label>Price <input type=\"int\" name=\"price\" required></label> <label>Description <textarea name=\"description\" rows=\"3\"></textarea></label><footer class=\"grid\"><button type=\"button\" onclick=\"document.getElementById('modal').close()\" class=\"secondary\">Close</button> <button type=\"submit\">Save</button></footer></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" required></label> <label>Cena <input type=\"int\" name=\"price\" required></label> <label>Opis <textarea name=\"description\" rows=\"3\"></textarea></label><footer class=\"grid\"><button type=\"button\" onclick=\"document.getElementById('modal').close()\" class=\"secondary\">Zamknij</button> <button type=\"submit\">Zapisz</button></footer></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -399,78 +399,78 @@ func EditEventForm(e model.Event) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/events/%d", e.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 140, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 142, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" hx-swap=\"none\"><label>Title <input type=\"text\" name=\"title\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" hx-swap=\"none\"><label>Tytuł <input type=\"text\" name=\"title\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(e.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 143, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 145, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" required></label> <label>Date <input type=\"date\" name=\"date\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" required></label> <label>Data <input type=\"date\" name=\"date\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.ResolveAttributeValue(e.Date[:10])
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 148, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 150, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" required></label> <label>Price <input type=\"int\" name=\"price\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" required></label> <label>Cena <input type=\"int\" name=\"price\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.ResolveAttributeValue(e.Price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 153, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 155, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" required></label> <label>Description <textarea name=\"description\" rows=\"3\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" required></label> <label>Opis <textarea name=\"description\" rows=\"3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(e.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 158, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 160, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</textarea></label><footer class=\"grid\"><button type=\"button\" onclick=\"document.getElementById('modal').close()\" class=\"secondary\">Cancel</button> <button type=\"submit\">Save</button> <button style=\"background:red; border-color:red\" type=\"button\" hx-delete=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</textarea></label><footer class=\"grid\"><button type=\"button\" onclick=\"document.getElementById('modal').close()\" class=\"secondary\">Anuluj</button> <button type=\"submit\">Zapisz</button> <button style=\"background:red; border-color:red\" type=\"button\" hx-delete=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/events/%d", e.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 174, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 176, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\" hx-confirm=\"Delete this event?\"><i data-lucide=\"trash-2\"></i></button></footer></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\" hx-confirm=\"Usunąć to wydarzenie?\"><i data-lucide=\"trash-2\"></i></button></footer></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -500,12 +500,12 @@ func agendaView(events []model.Event) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(events) == 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<p>No events this month.</p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<p>Brak wydarzeń w tym miesiącu.</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<table><thead><tr><th>Date</th><th>Title</th><th>Description</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<table><thead><tr><th>Data</th><th>Tytuł</th><th>Opis</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -517,7 +517,7 @@ func agendaView(events []model.Event) templ.Component {
 				var templ_7745c5c3_Var25 string
 				templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(e.Date[:10])
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 200, Col: 68}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 202, Col: 68}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 				if templ_7745c5c3_Err != nil {
@@ -530,7 +530,7 @@ func agendaView(events []model.Event) templ.Component {
 				var templ_7745c5c3_Var26 string
 				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(e.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 201, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 203, Col: 37}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 				if templ_7745c5c3_Err != nil {
@@ -543,7 +543,7 @@ func agendaView(events []model.Event) templ.Component {
 				var templ_7745c5c3_Var27 string
 				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(e.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 202, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 204, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 				if templ_7745c5c3_Err != nil {
@@ -584,7 +584,7 @@ func calendarView(year, month int, firstWeekday time.Weekday, daysInMonth int, e
 			templ_7745c5c3_Var28 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<table style=\"table-layout:fixed; width:100%\"><thead><tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th style=\"color:var(--pico-muted-color)\">Sat</th><th style=\"color:var(--pico-muted-color)\">Sun</th></tr></thead> <tbody>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<table style=\"table-layout:fixed; width:100%\"><thead><tr><th>Pn</th><th>Wt</th><th>Śr</th><th>Cz</th><th>Pt</th><th style=\"color:var(--pico-muted-color)\">Sb</th><th style=\"color:var(--pico-muted-color)\">Nd</th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -646,7 +646,7 @@ func calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, e
 					var templ_7745c5c3_Var30 string
 					templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/events/new?date=%04d-%02d-%02d", year, month, day))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 240, Col: 97}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 242, Col: 97}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var30)
 					if templ_7745c5c3_Err != nil {
@@ -659,7 +659,7 @@ func calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, e
 					var templ_7745c5c3_Var31 string
 					templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", day))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 245, Col: 63}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 247, Col: 63}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
 					if templ_7745c5c3_Err != nil {
@@ -677,7 +677,7 @@ func calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, e
 						var templ_7745c5c3_Var32 string
 						templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/events/edit/%d", e.ID))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 248, Col: 77}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 250, Col: 77}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var32)
 						if templ_7745c5c3_Err != nil {
@@ -690,7 +690,7 @@ func calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, e
 						var templ_7745c5c3_Var33 string
 						templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(e.Title)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 254, Col: 41}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/events.templ`, Line: 256, Col: 41}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 						if templ_7745c5c3_Err != nil {
