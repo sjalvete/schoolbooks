@@ -43,9 +43,9 @@ func (h *RecipientHandler) EditRecipientForm(w http.ResponseWriter, r *http.Requ
 func (h *RecipientHandler) Create(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	account := r.FormValue("account")
-	description := r.FormValue("description")
+	details := r.FormValue("details")
 
-	if err := model.CreateRecipient(h.DB, title, account, description); err != nil {
+	if err := model.CreateRecipient(h.DB, title, account, details); err != nil {
 		http.Error(w, "Nie udało się utworzyć odbiorcy", http.StatusInternalServerError)
 		return
 	}
@@ -58,9 +58,9 @@ func (h *RecipientHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	title := r.FormValue("title")
 	account := r.FormValue("account")
-	description := r.FormValue("description")
+	details := r.FormValue("details")
 
-	if err := model.UpdateRecipient(h.DB, id, title, account, description); err != nil {
+	if err := model.UpdateRecipient(h.DB, id, title, account, details); err != nil {
 		http.Error(w, "Nie udało się zaktualizować odbiorcy", http.StatusInternalServerError)
 		return
 	}

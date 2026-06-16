@@ -5,35 +5,28 @@ import (
 	"fmt"
 )
 
-type Attendee struct {
-	ID         int
-	Name       string
-	Attending  bool
-	Paid       bool
-	AmountPaid bool
-}
-
 type Event struct {
 	ID          int
 	Title       string
 	Description string
 	Date        string
 	Price       string
-	Attendees   []Attendee
+	Skippable   bool
+	RecipientID int
 }
 
-func CreateEvent(db *sql.DB, title, description, price, date string) error {
+func CreateEvent(db *sql.DB, title, description, price, date string, skippable bool, recipientID *int) error {
 	_, err := db.Exec(
-		"INSERT INTO events (title, description, price, date) VALUES (?, ?, ?, ?)",
-		title, description, price, date,
+		"INSERT INTO events (title, description, price, date, skippable, recipient_id) VALUES (?, ?, ?, ?, ?, ?)",
+		title, description, price, date, skippable, recipientID,
 	)
 	return err
 }
 
-func UpdateEvent(db *sql.DB, id, title, description, price, date string) error {
+func UpdateEvent(db *sql.DB, id, title, description, price, date string, skippable bool, recipientID *int) error {
 	_, err := db.Exec(
-		"UPDATE events SET title = ?, description = ?, price = ?, date = ? WHERE id = ?",
-		title, description, price, date, id,
+		"UPDATE events SET title = ?, description = ?, price = ?, date = ?, skippable = ?, recipient_id = ? WHERE id = ?",
+		title, description, price, date, skippable, recipientID, id,
 	)
 	return err
 }
@@ -48,32 +41,15 @@ func DeleteEvent(db *sql.DB, id string) error {
 
 func GetEventByID(db *sql.DB, id string) (Event, error) {
 	var e Event
+	var recipientID sql.NullInt64
 	err := db.QueryRow(
-		"SELECT id, title, description, price, date FROM events WHERE id = ?", id,
-	).Scan(&e.ID, &e.Title, &e.Description, &e.Price, &e.Date)
+		"SELECT id, title, description, price, date, skippable, recipient_id FROM events WHERE id = ?", id,
+	).Scan(&e.ID, &e.Title, &e.Description, &e.Price, &e.Date, &e.Skippable, &recipientID)
+	if recipientID.Valid {
+		e.RecipientID = int(recipientID.Int64)
+	}
 
 	return e, err
-}
-
-func GetAttendees(db *sql.DB, user, event string) ([]Attendee, error) {
-	var attendees []Attendee
-	rows, err := db.Query(`
-		SELECT c.id, c.name, a.attending, a.paid, a.amount_paid FROM children c
-		JOIN attendance a ON c.id = a.child_id
-		WHERE user_id = ? AND event_id = ?`,
-		user, event,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var a Attendee
-		rows.Scan(&a.ID, &a.Name, &a.Attending, &a.Paid, &a.AmountPaid)
-		attendees = append(attendees, a)
-	}
-	return attendees, nil
 }
 
 func ListEvents(db *sql.DB) ([]Event, error) {

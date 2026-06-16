@@ -16,7 +16,7 @@ func Load() *Config {
 		SessionKey: getEnv("SESSION_KEY", "change-in-production"),
 		Port:       getEnv("PORT", "8080"),
 		AppEnv:     getEnv("APP_ENV", "development"),
-		Debug:      true,
+		Debug:      false,
 	}
 }
 

@@ -125,7 +125,13 @@ func (h *EventHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 func (h *EventHandler) NewEventForm(w http.ResponseWriter, r *http.Request) {
 	date := r.URL.Query().Get("date")
 
-	templates.NewEventForm(date).Render(r.Context(), w)
+	recipients, err := model.ListRecipients(h.DB)
+	if err != nil {
+		http.Error(w, "Nie udało się załadować odbiorców", http.StatusInternalServerError)
+		return
+	}
+
+	templates.NewEventForm(date, recipients).Render(r.Context(), w)
 }
 
 func (h *EventHandler) EditEventForm(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +143,13 @@ func (h *EventHandler) EditEventForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templates.EditEventForm(e).Render(r.Context(), w)
+	recipients, err := model.ListRecipients(h.DB)
+	if err != nil {
+		http.Error(w, "Nie udało się załadować odbiorców", http.StatusInternalServerError)
+		return
+	}
+
+	templates.EditEventForm(e, recipients).Render(r.Context(), w)
 }
 
 func (h *EventHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -145,8 +157,10 @@ func (h *EventHandler) Create(w http.ResponseWriter, r *http.Request) {
 	description := r.FormValue("description")
 	date := r.FormValue("date")
 	price := r.FormValue("price")
+	skippable := r.FormValue("skippable") != ""
+	recipientID := parseRecipientID(r.FormValue("recipient_id"))
 
-	if err := model.CreateEvent(h.DB, title, description, price, date); err != nil {
+	if err := model.CreateEvent(h.DB, title, description, price, date, skippable, recipientID); err != nil {
 		http.Error(w, "Nie udało się utworzyć wydarzenia", http.StatusInternalServerError)
 		return
 	}
@@ -161,14 +175,24 @@ func (h *EventHandler) Update(w http.ResponseWriter, r *http.Request) {
 	description := r.FormValue("description")
 	date := r.FormValue("date")
 	price := r.FormValue("price")
+	skippable := r.FormValue("skippable") != ""
+	recipientID := parseRecipientID(r.FormValue("recipient_id"))
 
-	if err := model.UpdateEvent(h.DB, id, title, description, price, date); err != nil {
+	if err := model.UpdateEvent(h.DB, id, title, description, price, date, skippable, recipientID); err != nil {
 		http.Error(w, "Nie udało się zaktualizować wydarzenia", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("HX-Refresh", "true")
 	w.WriteHeader(http.StatusOK)
+}
+
+func parseRecipientID(v string) *int {
+	id, err := strconv.Atoi(v)
+	if err != nil {
+		return nil
+	}
+	return &id
 }
 
 func (h *EventHandler) Delete(w http.ResponseWriter, r *http.Request) {

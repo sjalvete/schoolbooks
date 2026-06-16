@@ -43,7 +43,7 @@ func Login(pd *page.Data) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article style=\"max-width: 400px; margin: 4rem auto\"><h2>Zaloguj się</h2><form method=\"POST\" action=\"/login\"><label>Email <input type=\"email\" name=\"email\" required autofocus></label> <label>Hasło <input type=\"password\" name=\"password\" required></label> <button type=\"submit\">Zaloguj się</button></form></article>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article style=\"max-width: 800px; margin: 0 auto\"><h2>Zaloguj się</h2><form method=\"POST\" action=\"/login\"><label>Email <input type=\"text\" name=\"email\" required autofocus></label> <label>Hasło<div style=\"margin-bottom: --pico-spacing; position:relative\"><input type=\"password\" name=\"password\" required style=\"padding-right:2.25rem; margin-bottom: 0\"> <button type=\"button\" class=\"password-toggle\" onclick=\"togglePassword(this)\" aria-label=\"Pokaż hasło\" style=\"outline: none!important; box-shadow: none!important;\"><i data-lucide=\"eye\" class=\"icon-eye\"></i> <i data-lucide=\"eye-off\" class=\"icon-eye-off\"></i></button></div></label> <button type=\"submit\">Zaloguj się</button></form></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

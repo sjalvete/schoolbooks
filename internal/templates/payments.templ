@@ -1,0 +1,279 @@
+package templates
+
+import (
+    "fmt"
+    "schoolbooks/internal/model"
+    "schoolbooks/internal/page"
+    "schoolbooks/internal/locale"
+)
+
+templ AdminPayments(pd *page.Data, buckets [3][]model.EventAttendance) {
+    @Layout(pd) {
+        <section>
+            <h2 style="margin-bottom:1rem">Rozliczenia</h2>
+
+            if len(buckets[0]) == 0 && len(buckets[1]) == 0 && len(buckets[2]) == 0 {
+                <p>Brak wydarzeń.</p>
+            }
+
+            @paymentBucketGroup("Zgłoszone płatności do potwierdzenia", buckets[0], true)
+            @paymentBucketGroup("Do opłacenia", buckets[1], true)
+            @paymentBucketGroup("Pozostałe", buckets[2], false)
+        </section>
+    }
+}
+
+templ UserPayments(pd *page.Data, buckets [3][]model.EventAttendance) {
+    @Layout(pd) {
+        <section>
+            <h2 style="margin-bottom:3rem">Rozliczenia { pd.User.Name }</h2>
+
+            if len(buckets[0]) == 0 && len(buckets[1]) == 0 && len(buckets[2]) == 0 {
+                <p>Brak wydarzeń.</p>
+            }
+
+            @userPaymentList("Opłata zgłoszona", buckets[0])
+            @userPaymentList("Do opłacenia", buckets[1])
+            @userPaymentList("Pozostałe", buckets[2])
+        </section>
+
+        <dialog id="recipient-modal">
+            <article>
+                <header>
+                    <button aria-label="Close" rel="prev" onclick="document.getElementById('recipient-modal').close()"></button>
+                    <strong id="recipient-modal-title"></strong>
+                </header>
+                <p>
+                    <strong>Konto: </strong>
+                    <span
+                        id="recipient-modal-account"
+                        style="font-family:monospace; cursor:pointer; text-decoration:underline dotted; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none"
+                        title="Kliknij, aby skopiować"
+                        onclick="copyAccountNumber(this)"
+                    ></span>
+                    <span id="recipient-modal-copied" style="display:none; color:var(--pico-ins-color); margin-left:0.5rem; font-size:0.85rem"></span>
+                </p>
+                <p id="recipient-modal-details"></p>
+            </article>
+        </dialog>
+    }
+}
+
+templ paymentBucketGroup(title string, events []model.EventAttendance, expanded bool) {
+    if len(events) > 0 {
+        <h4>{ title }</h4>
+        for _, ea := range events {
+            <details
+                if expanded {
+                    open
+                }
+                style="margin-bottom:0.75rem; border:1px solid var(--pico-muted-border-color); border-radius:var(--pico-border-radius); padding:0.5rem 1rem"
+            >
+                <summary style="cursor:pointer">
+                    <strong>{ ea.Title }</strong><span style="color:var(--pico-muted-color)">{ ", " }{ locale.FormatEventDate(ea.Date) }{ " — " }{ priceLabel(ea.Price) }
+                    </span>
+                </summary>
+                @adminAttendanceTable(ea)
+            </details>
+        }
+    }
+}
+
+templ adminAttendanceTable(ea model.EventAttendance) {
+    <table>
+        <thead>
+            <tr>
+                <th>Dziecko</th>
+                <th>Obecność</th>
+                if ea.Price > 0 {
+                    <th>Zapłacono</th>
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            for _, row := range ea.Rows {
+                <tr>
+                    <td>{ row.ChildName }<br><small>({ row.ParentName })</small></td>
+                    <td>{ goingLabel(row.Going, ea.Skippable) }</td>
+                    if ea.Price > 0 {
+                        <td>
+                            <input
+                                type="number"
+                                min="0"
+                                name="amount_paid"
+                                value={ fmt.Sprintf("%d", row.AmountPaid) }
+                                data-original={ fmt.Sprintf("%d", row.AmountPaid) }
+                                oninput="this.nextElementSibling.style.display = (parseInt(this.value || '0', 10) !== parseInt(this.dataset.original, 10)) ? 'inline-block' : 'none'"
+                                style="width:6rem; display:inline-block"
+                            />
+                            <button
+                                type="button"
+                                style="display:none; margin-left:0.25rem; padding:0.25rem 0.6rem"
+                                hx-put={ fmt.Sprintf("/payments/manage/%d/%d", ea.EventID, row.ChildID) }
+                                hx-include="previous input"
+                                hx-swap="none"
+                            >
+                                Zapisz
+                            </button>
+                            <br>
+                        </td>
+                        <td><i data-lucide={adminChildTag(ea, row)}></i></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+templ userPaymentList(title string, events []model.EventAttendance) {
+    if len(events) > 0 {
+        <h4>{ title }</h4>
+        <table>
+            <tbody>
+                for _, ea := range events {
+                    for _, row := range ea.Rows {
+                        <tr>
+                            <td class="payments-title">
+                                <span style="color:var(--pico-muted-color); font-size:0.85rem">
+                                    { locale.FormatEventDate(ea.Date) }
+                                </span>
+                                <br />
+                                { ea.Title }
+                                if len(ea.Rows) > 1 {
+                                    <br><strong>{ row.ChildName }</strong>
+                                }
+                                if !row.Paid && row.Going != nil && *row.Going && row.AmountPaid < ea.Price {
+                                    <br />
+                                    <span style="font-size: 1.5rem; font-weight: bold">{ priceLabel(ea.Price) }</span>
+                                    if ea.Recipient != nil {
+                                        <br />
+                                        <span
+                                            style="text-decoration:underline dotted; cursor:pointer"
+                                            onclick="showRecipientModal(this)"
+                                            data-title={ ea.Recipient.Title }
+                                            data-account={ ea.Recipient.Account }
+                                            data-details={ ea.Recipient.Details }
+                                        >(odbiorca { ea.Recipient.Title })</span>
+                                    }
+                                }
+                            </td>
+                            <td class="payments-actions">
+                                {{
+                                    tag := "flag"
+                                    label := fmt.Sprintf("%d/%s", row.AmountPaid, priceLabel(ea.Price))
+                                }}
+                                if row.AmountPaid == ea.Price {
+                                    if ea.Price > 0 {
+                                        {{ tag = "success"; label = "Opłacono " + priceLabel(ea.Price) }}
+                                    } else {
+                                        {{ tag = "default"; label = "Bezpłatne" }}
+                                    }
+                                }
+                                <span class={ "tag tag-" + tag }>{ label }</span>
+                                if !row.Paid {
+                                    if ea.Skippable {
+                                        @goingButtons(ea, row)
+                                    } else {
+                                        <span style="color:var(--pico-muted-color)">Obowiązkowe</span>
+                                    }
+                                }
+                                <br>
+                                if !ea.Skippable || (row.Going != nil && *row.Going) {
+                                    @paymentStage(ea, row)
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+}
+
+templ goingButtons(ea model.EventAttendance, row model.AttendanceRow) {
+    if row.Going == nil || !*row.Going {
+        <button
+            type="button"
+            hx-put={ fmt.Sprintf("/payments/%d/%d/going", ea.EventID, row.ChildID) }
+            hx-vals='{"going":"1"}'
+            hx-swap="none"
+        >
+            Zgłoś udział
+        </button>
+    }
+    if row.Going != nil && *row.Going {
+        <button
+            type="button"
+            hx-put={ fmt.Sprintf("/payments/%d/%d/going", ea.EventID, row.ChildID) }
+            hx-vals='{"going":"0"}'
+            hx-swap="none"
+            class="outline"
+        >
+            Cofnij udział
+        </button>
+    }
+}
+
+templ paymentStage(ea model.EventAttendance, row model.AttendanceRow) {
+    if row.AmountPaid < ea.Price {
+        if row.Paid {
+            <button
+                type="button"
+                class="outline"
+                hx-put={ fmt.Sprintf("/payments/%d/%d/paid", ea.EventID, row.ChildID) }
+                hx-swap="none"
+            >
+                Cofnij opłate
+            </button>
+        } else {
+            <button
+                type="button"
+                hx-put={ fmt.Sprintf("/payments/%d/%d/paid", ea.EventID, row.ChildID) }
+                hx-swap="none"
+            >
+                Zgłoś opłate
+            </button>
+        }
+    }
+}
+
+func priceLabel(price int) string {
+    if price <= 0 {
+        return "Bezpłatne"
+    }
+    return fmt.Sprintf("%d zł", price)
+}
+
+func goingLabel(going *bool, skippable bool) string {
+    if going == nil {
+        if skippable {
+            return "?"
+        } else {
+            return "!"
+        }
+    }
+    if *going {
+        return "Tak"
+    }
+    return "Nie"
+}
+
+func adminChildTag(ea model.EventAttendance, child model.AttendanceRow) string {
+    tag := ""
+    /*if child.Going != nil && !*child.Going {
+        tag = "badge-x"
+    } else if child.AmountPaid == ea.Price {
+        tag = "badge-check"
+    } else*/ if child.Paid && ea.Price > 0 {
+        tag = "badge-euro"
+    } /*else if ea.Skippable && child.Going == nil {
+        tag = "badge-question-mark"
+    } else if !ea.Skippable {
+        tag = "badge-alert"
+    } else if child.AmountPaid > 0 {
+        tag = "badge-percent"
+    }*/
+
+    return tag
+}

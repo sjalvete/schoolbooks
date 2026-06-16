@@ -10,6 +10,22 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "schoolbooks/internal/page"
 import "encoding/json"
+import "math/rand"
+
+func pickLogo() string {
+	items := []string{
+		"apple", "banana", "cherry", "broccoli", "candy", "carrot", "citrus", "coffee", "cookie", "croissant",
+		"grape", "ice-cream-cone", "snail", "nut", "tractor", "wheat", "clover", "chess-king", "chess-queen", "bow-arrow",
+		"flower", "goal", "sprout", "trophy", "puzzle", "podium", "volleyball", "venetian-mask", "rocket", "toy-brick",
+		"birdhouse", "drill", "lamp-desk", "rose", "utility-pole", "ear", "drum", "hand-metal", "piano", "binoculars", "caravan",
+		"shrub", "tent", "tree-palm", "trees", "bird", "bug", "cat", "dog", "fish", "panda", "rabbit", "rat", "shrimp",
+		"squirrel", "turtle", "worm", "origami",
+	}
+
+	randomIndex := rand.Intn(len(items))
+	randomItem := items[randomIndex]
+	return randomItem
+}
 
 func Layout(pd *page.Data) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -39,7 +55,7 @@ func Layout(pd *page.Data) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(pd.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layout.templ`, Line: 12, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layout.templ`, Line: 28, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -75,7 +91,7 @@ func Layout(pd *page.Data) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(pd.Flash.Message)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layout.templ`, Line: 25, Col: 38}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layout.templ`, Line: 41, Col: 38}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -86,27 +102,40 @@ func Layout(pd *page.Data) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><header class=\"container\"><nav><ul><li><strong>Schoolbooks</strong></li></ul><ul id=\"nav-links\" class=\"nav-links\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><header><div class=\"container\"><nav><div class=\"logo\"><a href=\"/\"><i data-lucide=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(pickLogo())
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/layout.templ`, Line: 48, Col: 87}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\"></i></a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if pd.User != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<li><a href=\"/\">Strona główna</a></li><li><a href=\"/events\">Wydarzenia</a></li><li><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button class=\"outline contrast\" type=\"submit\">Wyloguj</button></form></li>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button class=\"outline\" type=\"submit\">Wyloguj <i data-lucide=\"tent-tree\"></i></button></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</ul><button class=\"hamburger outline\" onclick=\"document.getElementById('nav-links').classList.toggle('open')\" aria-label=\"Menu\"><i data-lucide=\"menu\"></i></button></nav>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if pd.User != nil && pd.IsAdmin {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<nav class=\"admin\"><div></div><ul><li><a href=\"/events/manage\">Zarządzaj wydarzeniami</a></li><li><a href=\"/recipients\">Odbiorcy</a></li></ul></nav>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<nav class=\"admin\"><div></div><ul><li>Admin: </li><li><a href=\"/events/manage\">Wydarzenia</a></li><li><a href=\"/payments/manage\">Rozliczenia</a></li><li><a href=\"/recipients\">Odbiorcy</a></li></ul></nav>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</header><main class=\"container\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></header><main><div class=\"container\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -114,12 +143,12 @@ func Layout(pd *page.Data) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</main><footer class=\"container\"><small>Schoolbooks © 2026</small></footer>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div></main><footer><div class=\"container\"><small style=\"font-size:0.7rem;\"><img class=\"dev-logo\" src=\"/static/anxin.png\">anxin (c) 2026</small></div></footer>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if pd.User != nil && pd != nil && pd.Config != nil && pd.Config.Debug {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<pre style=\"font-size:0.7rem; background:#f4f4f4; padding:1rem; overflow:auto\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<pre style=\"font-size:0.7rem; background:black; color: #269b22; padding:1rem; overflow:auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -128,12 +157,41 @@ func Layout(pd *page.Data) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</pre>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</pre>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<script>\n            document.addEventListener('DOMContentLoaded', () => lucide.createIcons());\n            document.addEventListener('htmx:afterSwap', () => lucide.createIcons());\n        </script></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<script>\n            document.addEventListener('DOMContentLoaded', () => lucide.createIcons());\n            document.addEventListener('htmx:afterSwap', () => lucide.createIcons());\n\n            function togglePassword(btn) {\n                const input = btn.previousElementSibling;\n                const showing = input.type === 'text';\n                input.type = showing ? 'password' : 'text';\n                btn.classList.toggle('active', !showing);\n            }\n\n            function showRecipientModal(el) {\n                document.getElementById('recipient-modal-title').textContent = el.dataset.title;\n                document.getElementById('recipient-modal-account').textContent = el.dataset.account;\n                document.getElementById('recipient-modal-details').textContent = el.dataset.details;\n                document.getElementById('recipient-modal').showModal();\n            }\n\n            function copyAccountNumber(el) {\n                const ack = document.getElementById('recipient-modal-copied');\n                const text = el.textContent;\n\n                function showAck(label) {\n                    ack.textContent = label;\n                    ack.style.display = 'inline';\n                    clearTimeout(ack._hideTimeout);\n                    ack._hideTimeout = setTimeout(() => { ack.style.display = 'none'; }, 1500);\n                }\n\n                // execCommand-based fallback for browsers without (or denying) the\n                // async Clipboard API, e.g. mobile browsers on plain HTTP. Uses the\n                // contentEditable + Range/Selection trick required by iOS Safari to\n                // permit a programmatic copy.\n                function legacyCopy() {\n                    const ta = document.createElement('textarea');\n                    ta.value = text;\n                    ta.readOnly = true;\n                    ta.contentEditable = 'true';\n                    ta.style.position = 'fixed';\n                    ta.style.top = '0';\n                    ta.style.left = '0';\n                    ta.style.opacity = '0';\n                    document.body.appendChild(ta);\n\n                    const range = document.createRange();\n                    range.selectNodeContents(ta);\n                    const sel = window.getSelection();\n                    sel.removeAllRanges();\n                    sel.addRange(range);\n                    ta.setSelectionRange(0, text.length);\n\n                    let ok = false;\n                    try {\n                        ok = document.execCommand('copy');\n                    } catch (e) {\n                        ok = false;\n                    }\n                    document.body.removeChild(ta);\n                    return ok;\n                }\n\n                if (navigator.clipboard && window.isSecureContext) {\n                    navigator.clipboard.writeText(text).then(\n                        () => showAck('Skopiowano!'),\n                        () => showAck(legacyCopy() ? 'Skopiowano!' : 'Nie udało się skopiować')\n                    );\n                } else {\n                    showAck(legacyCopy() ? 'Skopiowano!' : 'Nie udało się skopiować');\n                }\n            }\n        </script></body></html>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func Logo() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<svg width=\"100%\" viewBox=\"210 60 270 410\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-height: 128px; display: block; margin-inline: auto;\"><defs><clipPath id=\"pearclip\"><path d=\"M338 138 C302 138 286 174 278 212 C271 248 242 270 226 308 C206 354 218 416 272 441 C314 460 372 461 414 441 C468 416 480 352 458 306 C441 272 416 250 407 212 C398 174 376 138 338 138 Z\"></path></clipPath></defs> <g transform=\"rotate(-5 340 300)\"><path d=\"M352 84 C346 108 338 124 326 142\" fill=\"none\" stroke=\"#7A4A21\" stroke-width=\"12\" stroke-linecap=\"round\"></path> <path d=\"M358 92 C368 82 380 82 386 90 C391 97 386 106 377 105\" fill=\"none\" stroke=\"#7A4A21\" stroke-width=\"5\" stroke-linecap=\"round\"></path> <path d=\"M348 100 C386 62 442 66 468 92 C442 128 386 130 350 112 Z\" fill=\"#5BA838\"></path> <path d=\"M354 104 C394 82 432 82 458 93\" fill=\"none\" stroke=\"#3F7D24\" stroke-width=\"3.5\" stroke-linecap=\"round\"></path> <path d=\"M382 94 C385 102 388 108 393 113 M410 86 C414 96 419 104 425 109\" fill=\"none\" stroke=\"#3F7D24\" stroke-width=\"3\" stroke-linecap=\"round\"></path> <g clip-path=\"url(#pearclip)\"><rect x=\"190\" y=\"120\" width=\"310\" height=\"360\" fill=\"#C9D45A\"></rect> <path d=\"M190 120 H500 V250 C450 292 390 262 330 288 C275 310 224 284 190 262 Z\" fill=\"#8FBF45\"></path> <ellipse cx=\"340\" cy=\"178\" rx=\"88\" ry=\"62\" fill=\"#7DB23E\"></ellipse> <ellipse cx=\"315\" cy=\"418\" rx=\"145\" ry=\"92\" fill=\"#EFC94C\"></ellipse> <ellipse cx=\"300\" cy=\"440\" rx=\"100\" ry=\"55\" fill=\"#F4D766\"></ellipse> <ellipse cx=\"442\" cy=\"355\" rx=\"72\" ry=\"112\" fill=\"#D95B43\" opacity=\"0.88\"></ellipse> <ellipse cx=\"455\" cy=\"355\" rx=\"46\" ry=\"86\" fill=\"#C04632\" opacity=\"0.85\"></ellipse> <ellipse cx=\"234\" cy=\"372\" rx=\"38\" ry=\"88\" fill=\"#7BA23A\" opacity=\"0.55\"></ellipse> <ellipse cx=\"302\" cy=\"198\" rx=\"24\" ry=\"42\" fill=\"#E6F0A0\" opacity=\"0.85\"></ellipse> <circle cx=\"262\" cy=\"252\" r=\"3\" fill=\"#8A6B2F\"></circle> <circle cx=\"330\" cy=\"232\" r=\"2.6\" fill=\"#8A6B2F\"></circle> <circle cx=\"288\" cy=\"402\" r=\"3\" fill=\"#B98F3A\"></circle> <circle cx=\"318\" cy=\"430\" r=\"2.6\" fill=\"#B98F3A\"></circle> <circle cx=\"262\" cy=\"430\" r=\"2.4\" fill=\"#B98F3A\"></circle> <circle cx=\"350\" cy=\"448\" r=\"2.6\" fill=\"#B98F3A\"></circle> <circle cx=\"402\" cy=\"418\" r=\"2.8\" fill=\"#9E3A28\"></circle> <circle cx=\"436\" cy=\"392\" r=\"2.6\" fill=\"#9E3A28\"></circle> <circle cx=\"452\" cy=\"320\" r=\"2.8\" fill=\"#9E3A28\"></circle> <circle cx=\"428\" cy=\"276\" r=\"2.5\" fill=\"#9E3A28\"></circle> <circle cx=\"378\" cy=\"206\" r=\"2.6\" fill=\"#5E8A2C\"></circle> <circle cx=\"300\" cy=\"262\" r=\"2.4\" fill=\"#5E8A2C\"></circle> <circle cx=\"246\" cy=\"330\" r=\"2.6\" fill=\"#5E8A2C\"></circle></g> <path d=\"M338 138 C302 138 286 174 278 212 C271 248 242 270 226 308 C206 354 218 416 272 441 C314 460 372 461 414 441 C468 416 480 352 458 306 C441 272 416 250 407 212 C398 174 376 138 338 138 Z\" fill=\"none\" stroke=\"#6E8A2D\" stroke-width=\"5\"></path> <path d=\"M278 268 C290 254 312 252 324 261\" fill=\"none\" stroke=\"#3A332C\" stroke-width=\"7\" stroke-linecap=\"round\"></path> <path d=\"M360 246 C372 234 392 234 404 244\" fill=\"none\" stroke=\"#3A332C\" stroke-width=\"7\" stroke-linecap=\"round\"></path> <path d=\"M288 290 a16 16 0 0 1 32 0 v12 a16 16 0 0 1 -32 0 Z\" fill=\"#332D27\"></path> <circle cx=\"310\" cy=\"290\" r=\"5\" fill=\"#FFFFFF\"></circle> <circle cx=\"298\" cy=\"304\" r=\"2.5\" fill=\"#FFFFFF\" opacity=\"0.85\"></circle> <path d=\"M372 284 a14 14 0 0 1 28 0 v10 a14 14 0 0 1 -28 0 Z\" fill=\"#332D27\"></path> <circle cx=\"391\" cy=\"284\" r=\"4.5\" fill=\"#FFFFFF\"></circle> <circle cx=\"380\" cy=\"296\" r=\"2\" fill=\"#FFFFFF\" opacity=\"0.85\"></circle> <ellipse cx=\"268\" cy=\"344\" rx=\"22\" ry=\"14\" fill=\"#FF9E86\"></ellipse> <ellipse cx=\"410\" cy=\"332\" rx=\"15\" ry=\"10\" fill=\"#E8705A\"></ellipse> <circle cx=\"296\" cy=\"332\" r=\"2.4\" fill=\"#5E8A2C\"></circle> <circle cx=\"310\" cy=\"341\" r=\"2.4\" fill=\"#5E8A2C\"></circle> <circle cx=\"384\" cy=\"318\" r=\"2.4\" fill=\"#9E3A28\"></circle> <path d=\"M296 354 C300 398 360 412 392 366 C398 358 392 350 382 352 C352 360 322 358 306 348 C298 343 294 346 296 354 Z\" fill=\"#5E2A1F\"></path> <rect x=\"316\" y=\"357\" width=\"50\" height=\"13\" rx=\"5\" fill=\"#FFFDF5\"></rect> <line x1=\"341\" y1=\"358\" x2=\"341\" y2=\"369\" stroke=\"#E3D9C2\" stroke-width=\"2\"></line> <ellipse cx=\"348\" cy=\"392\" rx=\"26\" ry=\"12\" fill=\"#FF8A7A\"></ellipse> <path d=\"M296 354 C300 398 360 412 392 366\" fill=\"none\" stroke=\"#3E1B12\" stroke-width=\"4\" stroke-linecap=\"round\"></path> <path d=\"M392 366 C398 359 402 351 403 344\" fill=\"none\" stroke=\"#3E1B12\" stroke-width=\"4\" stroke-linecap=\"round\"></path></g></svg>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

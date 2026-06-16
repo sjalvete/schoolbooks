@@ -27,10 +27,8 @@ templ Recipients(pd *page.Data, recipients []model.Recipient) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Tytuł</th>
-                            <th>Konto</th>
-                            <th>Opis</th>
-                            <th></th>
+                            <th>Nazwa</th>
+                            <th>Szczegóły</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,10 +41,10 @@ templ Recipients(pd *page.Data, recipients []model.Recipient) {
                                 hx-on::after-request="document.getElementById('modal').showModal()"
                             >
                                 <td>{ rcp.Title }</td>
-                                <td>{ rcp.Account }</td>
-                                <td class="recipient-details">{ rcp.Description }</td>
-                                <td style="text-align:right">
-                                    <i data-lucide="pencil"></i>
+                                <td class="recipient-details">
+                                    <strong>{ rcp.Account }</strong>
+                                    <br />
+                                    { rcp.Details }
                                 </td>
                             </tr>
                         }
@@ -65,7 +63,7 @@ templ Recipients(pd *page.Data, recipients []model.Recipient) {
 templ NewRecipientForm() {
     <form hx-post="/recipients" hx-swap="none">
         <label>
-            Tytuł
+            Nazwa
             <input type="text" name="title" required/>
         </label>
 
@@ -75,8 +73,8 @@ templ NewRecipientForm() {
         </label>
 
         <label>
-            Opis
-            <textarea name="description" rows="3"></textarea>
+            Szczegóły
+            <textarea name="details" rows="3"></textarea>
         </label>
 
         <footer class="grid">
@@ -98,7 +96,7 @@ templ NewRecipientForm() {
 templ EditRecipientForm(rcp model.Recipient) {
     <form hx-put={ fmt.Sprintf("/recipients/%d", rcp.ID) } hx-swap="none">
         <label>
-            Tytuł
+            Nazwa
             <input type="text" name="title" value={ rcp.Title } required/>
         </label>
 
@@ -108,8 +106,8 @@ templ EditRecipientForm(rcp model.Recipient) {
         </label>
 
         <label>
-            Opis
-            <textarea name="description" rows="3">{ rcp.Description }</textarea>
+            Szczegóły
+            <textarea name="details" rows="3">{ rcp.Details }</textarea>
         </label>
 
         <footer class="grid">

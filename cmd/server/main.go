@@ -10,8 +10,6 @@ import (
 	"schoolbooks/internal/config"
 	"schoolbooks/internal/db"
 	"schoolbooks/internal/handler"
-	"schoolbooks/internal/page"
-	"schoolbooks/internal/templates"
 	"syscall"
 	"time"
 
@@ -34,6 +32,7 @@ func main() {
 	authHandler := &handler.AuthHandler{DB: database, Config: cfg}
 	eventHandler := &handler.EventHandler{DB: database, Config: cfg}
 	recipientHandler := &handler.RecipientHandler{DB: database, Config: cfg}
+	paymentHandler := &handler.PaymentHandler{DB: database, Config: cfg}
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -49,11 +48,16 @@ func main() {
 	// logged in
 	r.Group(func(r chi.Router) {
 		r.Use(auth.RequireAuth)
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		r.Get("/", paymentHandler.UserList)
+		/*r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			pd := page.New("Strona główna", r, w, cfg)
 			templates.Home(pd).Render(r.Context(), w)
-		})
+		})*/
 		r.Get("/events", eventHandler.List)
+
+		r.Get("/payments", paymentHandler.UserList)
+		r.Put("/payments/{eventID}/{childID}/going", paymentHandler.SetGoing)
+		r.Put("/payments/{eventID}/{childID}/paid", paymentHandler.TogglePaid)
 	})
 
 	// admin
@@ -82,6 +86,9 @@ func main() {
 		r.Post("/recipients", recipientHandler.Create)
 		r.Put("/recipients/{id}", recipientHandler.Update)
 		r.Delete("/recipients/{id}", recipientHandler.Delete)
+
+		r.Get("/payments/manage", paymentHandler.AdminList)
+		r.Put("/payments/manage/{eventID}/{childID}", paymentHandler.SetAmountPaid)
 
 	})
 

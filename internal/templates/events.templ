@@ -3,6 +3,7 @@ package templates
 import (
     "fmt"
     "time"
+    "schoolbooks/internal/locale"
     "schoolbooks/internal/model"
     "schoolbooks/internal/page"
 )
@@ -21,26 +22,31 @@ templ UserEvents(pd *page.Data, year, month int, view string, firstWeekday time.
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem">
                 <a href={ templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=calendar", year, month)) }
                     role="button"
-                    if view == "calendar" {
-                        class=""
-                    } else {
+                    if view != "calendar" {
                         class="outline"
                     }>
                     Kalendarz
                 </a>
-                <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
+                <a href={ templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=list", year, month)) }
                     role="button"
-                    if view == "agenda" {
-                        class=""
-                    } else {
+                    if view != "list" {
                         class="outline"
                     }>
-                    Nadchodzące wydarzenia
+                    Lista dni
                 </a>
+                /*<a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
+                    role="button"
+                    if view != "agenda" {
+                        class="outline"
+                    }>
+                    Wszystkie
+                </a>*/
             </div>
 
             if view == "agenda" {
                 @agendaView(eventList)
+            } else if view == "list" {
+                @monthListView(year, month, daysInMonth, events)
             } else {
                 @calendarView(year, month, firstWeekday, daysInMonth, events)
             }
@@ -65,7 +71,7 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
             </div>
 
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem">
-                <a href={ templ.SafeURL(fmt.Sprintf("/events?year=%d&month=%d&view=calendar", year, month)) }
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=calendar", year, month)) }
                     role="button"
                     if view == "calendar" {
                         class=""
@@ -74,19 +80,30 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
                     }>
                     Kalendarz
                 </a>
-                <a href={ templ.SafeURL(fmt.Sprintf("/events?&view=agenda")) }
+                <a href={ templ.SafeURL(fmt.Sprintf("/events/manage?year=%d&month=%d&view=list", year, month)) }
+                    role="button"
+                    if view == "list" {
+                        class=""
+                    } else {
+                        class="outline"
+                    }>
+                    Lista dni
+                </a>
+                /*<a href={ templ.SafeURL(fmt.Sprintf("/events/manage?&view=agenda")) }
                     role="button"
                     if view == "agenda" {
                         class=""
                     } else {
                         class="outline"
                     }>
-                    Nadchodzące wydarzenia
-                </a>
+                    Wszystkie
+                </a>*/
             </div>
 
             if view == "agenda" {
                 @agendaView(eventList)
+            } else if view == "list" {
+                @monthListView(year, month, daysInMonth, events)
             } else {
                 @calendarView(year, month, firstWeekday, daysInMonth, events)
             }
@@ -99,7 +116,7 @@ templ AdminEvents(pd *page.Data, year, month int, view string, firstWeekday time
     }
 }
 
-templ NewEventForm(date string) {
+templ NewEventForm(date string, recipients []model.Recipient) {
     <form hx-post="/events" hx-swap="none">
         <label>
             Tytuł
@@ -121,6 +138,21 @@ templ NewEventForm(date string) {
             <textarea name="description" rows="3"></textarea>
         </label>
 
+        <label>
+            Odbiorca płatności
+            <select name="recipient_id">
+                <option value="">Brak</option>
+                for _, rcp := range recipients {
+                    <option value={ fmt.Sprintf("%d", rcp.ID) }>{ rcp.Title }</option>
+                }
+            </select>
+        </label>
+
+        <label>
+            <input type="checkbox" name="skippable" checked/>
+            Można zgłosić nieobecność
+        </label>
+
         <footer class="grid">
             <button
                 type="button"
@@ -138,7 +170,7 @@ templ NewEventForm(date string) {
     </form>
 }
 
-templ EditEventForm(e model.Event) {
+templ EditEventForm(e model.Event, recipients []model.Recipient) {
     <form hx-put={ fmt.Sprintf("/events/%d", e.ID) } hx-swap="none">
         <label>
             Tytuł
@@ -158,6 +190,29 @@ templ EditEventForm(e model.Event) {
         <label>
             Opis
             <textarea name="description" rows="3">{ e.Description }</textarea>
+        </label>
+
+        <label>
+            Odbiorca płatności
+            <select name="recipient_id">
+                <option value="">Brak</option>
+                for _, rcp := range recipients {
+                    <option value={ fmt.Sprintf("%d", rcp.ID) }
+                        if rcp.ID == e.RecipientID {
+                            selected
+                        }
+                    >{ rcp.Title }</option>
+                }
+            </select>
+        </label>
+
+        <label>
+            <input type="checkbox" name="skippable"
+                if e.Skippable {
+                    checked
+                }
+            />
+            Można zgłosić nieobecność
         </label>
 
         <footer class="grid">
@@ -263,6 +318,42 @@ templ calendarRows(year, month int, firstWeekday time.Weekday, daysInMonth int, 
             }
         </tr>
     }
+}
+
+templ monthListView(year, month, daysInMonth int, events map[int][]model.Event) {
+    <div style="display:flex; flex-direction:column; gap:0.5rem">
+        for day := 1; day <= daysInMonth; day++ {
+            {{ weekday := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local).Weekday() }}
+            <div
+                if weekday == time.Saturday || weekday == time.Sunday {
+                    style="background-color: #eee; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; padding:0.5rem; border:1px solid var(--pico-muted-border-color); border-radius:4px; cursor:pointer"
+                } else {
+                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; padding:0.5rem; border:1px solid var(--pico-muted-border-color); border-radius:4px; cursor:pointer"
+                }
+                hx-get={ fmt.Sprintf("/events/new?date=%04d-%02d-%02d", year, month, day) }
+                hx-target="#modal-content"
+                hx-swap="innerHTML"
+                hx-on::after-request="document.getElementById('modal').showModal()"
+            >
+                <div>
+                    <strong>{ locale.PolishWeekday(weekday) }, { fmt.Sprintf("%d", day) }</strong>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:2px; align-items:flex-end; min-width:0">
+                    for _, e := range events[day] {
+                        <div style="font-size:0.8rem; background:var(--pico-primary); color:white; border-radius:3px; padding:2px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%"
+                            hx-get={ fmt.Sprintf("/events/edit/%d", e.ID) }
+                            hx-target="#modal-content"
+                            hx-swap="innerHTML"
+                            hx-on:click="event.stopPropagation()"
+                            hx-on::after-request="document.getElementById('modal').showModal()"
+                        >
+                            { e.Title }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
 }
 
 func prevMonth(month int) int {

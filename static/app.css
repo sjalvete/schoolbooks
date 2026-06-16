@@ -1,10 +1,21 @@
-.container {padding: 0}
-
+body, html { background-color: lightgrey }
+header {
+    background: white;
+    position: relative;
+    z-index: 2;
+}
+main {
+    z-index: 1;
+    position: relative;
+    background: white;
+    min-height: 50vh;
+    box-shadow: 0 0px 15px 5px rgba(0,0,0,0.3)
+}
+.logo a svg { width: 42px; height: 42px }
 .flash { padding:1rem; border-radius:4px; margin-bottom:1rem; cursor:pointer; color:white; }
 .flash-success { background:#2d9948; }
 .flash-error   { background:#c0392b; }
 .flash-warning { background:#d68910; }
-
 
 .hamburger {
     display: none;
@@ -21,11 +32,86 @@
 }
 .recipient-details {
     color:var(--pico-muted-color);
-    max-width: 33vw;
+    max-width: 60vw;
     font-size: 14px;
 }
 
+table {
+    margin-bottom: 50px;
+}
+table:last-child {
+    margin-bottom: 0;
+}
+
+section {
+    margin-bottom: 0;
+}
+
+tr:nth-child(2n) td {
+    background:whitesmoke;
+}
+
+td {
+    border-bottom: 0!important;
+    margin-bottom: 5px!important;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: white;
+    white-space: nowrap;
+}
+.tag-default { background:#45b38e; }
+.tag-success { background:#2d9948; }
+.tag-flag    { background:#d68910; }
+
+.password-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    background: none;
+    border: none;
+    color: var(--pico-muted-color);
+    cursor: pointer;
+}
+.password-toggle .icon-eye-off { display: none; }
+.password-toggle.active .icon-eye { display: none; }
+.password-toggle.active .icon-eye-off { display: inline; }
+
+.payments-title { width: 60% }
+.payments-actions { width: 40% }
+.payments-actions button { width: 100% }
+
+body > footer {
+    background: lightgray;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+body > footer .dev-logo {
+    width: 32px;
+    margin: 10px;
+}
+
 @media (max-width: 768px) {
+    main .container { padding: 0!important }
+    h2 { text-align: center }
+    h4 {
+        padding: 0 10px;
+        text-align: center;
+    }
+    .logo svg {
+        max-height: 48px!important;
+    }
+
     .hamburger {
         display: block;
     }
@@ -50,5 +136,15 @@
     nav {
         flex-wrap: wrap;
         position: relative;
+    }
+
+    td .tag {
+        width: 100%;
+        border-radius: 0;
+    }
+    button {
+        padding: 5px!important;
+        margin-bottom: 0!important;
+        border-radius: 0!important;
     }
 }
